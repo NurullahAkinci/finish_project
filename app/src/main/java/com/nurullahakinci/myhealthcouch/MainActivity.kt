@@ -39,8 +39,7 @@ class MainActivity : AppCompatActivity() {
     
     private fun setupCards() {
         findViewById<MaterialCardView>(R.id.heartRateCard).setOnClickListener {
-            val intent = Intent(this, HeartRateDetailActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, HeartRateDetailActivity::class.java))
         }
         
         findViewById<MaterialCardView>(R.id.breathingCard).setOnClickListener {
@@ -48,7 +47,12 @@ class MainActivity : AppCompatActivity() {
         }
         
         findViewById<MaterialCardView>(R.id.stepsCard).setOnClickListener {
-            startActivity(Intent(this, StepCounterDetailActivity::class.java))
+            try {
+                val intent = Intent(this, StepCounterDetailActivity::class.java)
+                startActivity(intent)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
         
         findViewById<MaterialCardView>(R.id.waterCard).setOnClickListener {
