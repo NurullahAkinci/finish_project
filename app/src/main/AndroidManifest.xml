@@ -37,6 +37,18 @@
             android:label="Ayarlar"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.MyHealthCouch" />
+        <activity
+            android:name=".ProfileSettingsActivity"
+            android:exported="false"
+            android:label="Profil Düzenle"
+            android:parentActivityName=".SettingsActivity"
+            android:theme="@style/Theme.MyHealthCouch" />
+        <activity
+            android:name=".WaterConsumptionDetailActivity"
+            android:exported="false"
+            android:label="Water Consumption"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.MyHealthCouch" />
     </application>
 
 </manifest>

@@ -9,6 +9,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.card.MaterialCardView
 import android.content.SharedPreferences
+import android.content.Intent
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
@@ -35,8 +36,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun setupViews() {
         // Profile Settings
         findViewById<MaterialCardView>(R.id.profileCard).setOnClickListener {
-            // Profile düzenleme sayfasına yönlendirme
-            Toast.makeText(this, "Profil ayarları yakında eklenecek", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, ProfileSettingsActivity::class.java))
         }
         
         // Goals Settings
