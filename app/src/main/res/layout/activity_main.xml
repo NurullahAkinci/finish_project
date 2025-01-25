@@ -44,7 +44,7 @@
                     android:id="@+id/userName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="John Doe"
+                    android:text="Nurullah Akıncı"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold"
