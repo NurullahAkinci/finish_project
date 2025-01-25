@@ -135,13 +135,17 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Grafik Kartı -->
+            <!-- Chart Card -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/chartCard"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:focusable="true"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="4dp">
+                app:cardElevation="4dp"
+                android:foreground="?attr/selectableItemBackground">
 
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/heartRateChart"

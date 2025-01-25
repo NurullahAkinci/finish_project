@@ -2,6 +2,7 @@ package com.nurullahakinci.myhealthcouch
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -10,12 +11,16 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.listener.ChartTouchListener
+import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import java.util.*
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import com.nurullahakinci.myhealthcouch.data.HeartRateDatabase
 import com.nurullahakinci.myhealthcouch.data.HeartRateEntry
@@ -31,6 +36,7 @@ class HeartRateDetailActivity : AppCompatActivity() {
     private lateinit var weeklyAverageTextView: TextView
     private lateinit var monthlyAverageTextView: TextView
     private var selectedTimeRange = TimeRange.DAILY
+    private var timestamps = mutableListOf<LocalDateTime>()
 
     enum class TimeRange {
         DAILY, WEEKLY, MONTHLY
@@ -77,9 +83,59 @@ class HeartRateDetailActivity : AppCompatActivity() {
             setPinchZoom(true)
             setDrawGridBackground(false)
             
+            // Enable double tap to zoom
+            isDoubleTapToZoomEnabled = true
+            
+            // Set minimum scale factor
+            setScaleMinima(1f, 1f)
+            
+            // Set gesture listener
+            onChartGestureListener = object : OnChartGestureListener {
+                override fun onChartGestureStart(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {
+                    // Gesture başladığında yapılacak işlemler
+                }
+                override fun onChartGestureEnd(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {
+                    // Gesture bittiğinde yapılacak işlemler
+                }
+                override fun onChartLongPressed(me: MotionEvent?) {
+                    // Uzun basıldığında yapılacak işlemler
+                }
+                override fun onChartDoubleTapped(me: MotionEvent?) {
+                    // Çift tıklandığında yapılacak işlemler
+                    animateX(500)
+                }
+                override fun onChartSingleTapped(me: MotionEvent?) {
+                    // Tek tıklandığında yapılacak işlemler
+                    animateY(500)
+                }
+                override fun onChartFling(me1: MotionEvent?, me2: MotionEvent?, velocityX: Float, velocityY: Float) {
+                    // Fling hareketi yapıldığında yapılacak işlemler
+                }
+                override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {
+                    // Ölçeklendirme yapıldığında yapılacak işlemler
+                }
+                override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {
+                    // Grafik kaydırıldığında yapılacak işlemler
+                }
+            }
+            
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
                 setDrawGridLines(false)
+                labelRotationAngle = -45f
+                granularity = 1f
+                valueFormatter = object : ValueFormatter() {
+                    override fun getFormattedValue(value: Float): String {
+                        return if (value.toInt() in timestamps.indices) {
+                            val formatter = when (selectedTimeRange) {
+                                TimeRange.DAILY -> DateTimeFormatter.ofPattern("HH:mm")
+                                TimeRange.WEEKLY -> DateTimeFormatter.ofPattern("MM/dd HH:mm")
+                                TimeRange.MONTHLY -> DateTimeFormatter.ofPattern("MM/dd")
+                            }
+                            timestamps[value.toInt()].format(formatter)
+                        } else ""
+                    }
+                }
             }
             
             axisLeft.apply {
@@ -88,6 +144,17 @@ class HeartRateDetailActivity : AppCompatActivity() {
                 axisMaximum = 120f
             }
             axisRight.isEnabled = false
+
+            legend.apply {
+                textSize = 12f
+                formSize = 12f
+                isEnabled = true
+            }
+        }
+
+        // Chart card'ına tıklama işlevi ekle
+        findViewById<MaterialCardView>(R.id.chartCard).setOnClickListener {
+            lineChart.animateX(1000)
         }
     }
     
@@ -147,7 +214,9 @@ class HeartRateDetailActivity : AppCompatActivity() {
         if (!this::lineChart.isInitialized) return
         
         val filteredData = getFilteredData()
+        timestamps.clear()
         val entries = filteredData.mapIndexed { index, entry ->
+            timestamps.add(entry.timestamp)
             Entry(index.toFloat(), entry.value)
         }
 
@@ -156,8 +225,14 @@ class HeartRateDetailActivity : AppCompatActivity() {
             setCircleColor(ContextCompat.getColor(this@HeartRateDetailActivity, R.color.primary))
             lineWidth = 2f
             circleRadius = 4f
-            setDrawValues(false)
+            setDrawValues(true)
+            valueTextSize = 10f
             mode = LineDataSet.Mode.CUBIC_BEZIER
+            
+            // Highlight settings
+            highLightColor = ContextCompat.getColor(this@HeartRateDetailActivity, R.color.primary)
+            setDrawHighlightIndicators(true)
+            highlightLineWidth = 1.5f
         }
         
         lineChart.data = LineData(dataSet)
