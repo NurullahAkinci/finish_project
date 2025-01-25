@@ -9,7 +9,6 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.card.MaterialCardView
 import android.content.SharedPreferences
-import androidx.preference.PreferenceManager
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
@@ -26,18 +25,18 @@ class SettingsActivity : AppCompatActivity() {
     private fun setupToolbar() {
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Settings"
+        supportActionBar?.title = "Ayarlar"
     }
     
     private fun setupPreferences() {
-        prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        prefs = getSharedPreferences("MyHealthCouch", MODE_PRIVATE)
     }
     
     private fun setupViews() {
         // Profile Settings
         findViewById<MaterialCardView>(R.id.profileCard).setOnClickListener {
             // Profile düzenleme sayfasına yönlendirme
-            Toast.makeText(this, "Profile settings coming soon", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Profil ayarları yakında eklenecek", Toast.LENGTH_SHORT).show()
         }
         
         // Goals Settings

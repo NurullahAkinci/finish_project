@@ -31,6 +31,12 @@
             android:name=".StepCounterDetailActivity"
             android:exported="false"
             android:theme="@style/Theme.MyHealthCouch" />
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:label="Ayarlar"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.MyHealthCouch" />
     </application>
 
 </manifest>
