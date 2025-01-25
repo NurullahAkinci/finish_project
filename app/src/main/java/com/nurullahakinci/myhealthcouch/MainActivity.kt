@@ -21,15 +21,16 @@ class MainActivity : AppCompatActivity() {
         findViewById<BottomNavigationView>(R.id.bottomNav).setOnItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.navigation_home -> {
-                    // Handle home navigation
+                    // Ana sayfa zaten açık
                     true
                 }
                 R.id.navigation_analytics -> {
-                    // Handle analytics navigation
+                    // Analytics sayfasına yönlendirme
                     true
                 }
                 R.id.navigation_settings -> {
-                    // Handle settings navigation
+                    // Ayarlar sayfasına yönlendirme
+                    startActivity(Intent(this, SettingsActivity::class.java))
                     true
                 }
                 else -> false
