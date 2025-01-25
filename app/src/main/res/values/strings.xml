@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">My Health Couch</string>
+    <string name="enter_data">Enter Data</string>
 </resources>

@@ -17,10 +17,13 @@ import com.google.android.material.textfield.TextInputEditText
 import java.util.*
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import com.nurullahakinci.myhealthcouch.data.HeartRateDatabase
+import com.nurullahakinci.myhealthcouch.data.HeartRateEntry
 
 class HeartRateDetailActivity : AppCompatActivity() {
     private lateinit var lineChart: LineChart
-    private val heartRateData = mutableListOf<HeartRateEntry>()
+    private lateinit var database: HeartRateDatabase
+    private var heartRateData = mutableListOf<HeartRateEntry>()
     private lateinit var averageTextView: TextView
     private lateinit var maxTextView: TextView
     private lateinit var minTextView: TextView
@@ -33,11 +36,6 @@ class HeartRateDetailActivity : AppCompatActivity() {
         DAILY, WEEKLY, MONTHLY
     }
 
-    data class HeartRateEntry(
-        val timestamp: LocalDateTime,
-        val value: Float
-    )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_heart_rate_detail)
@@ -45,6 +43,10 @@ class HeartRateDetailActivity : AppCompatActivity() {
         setupToolbar()
         setupViews()
         setupChart()
+        
+        database = HeartRateDatabase(this)
+        loadDataFromDatabase()
+        
         setupAddButton()
         setupTimeRangeCards()
     }
@@ -62,7 +64,7 @@ class HeartRateDetailActivity : AppCompatActivity() {
     private fun setupToolbar() {
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Kalp Ritmi Detayları"
+        supportActionBar?.title = "Heart Rate Details"
     }
     
     private fun setupChart() {
@@ -86,8 +88,6 @@ class HeartRateDetailActivity : AppCompatActivity() {
                 axisMaximum = 120f
             }
             axisRight.isEnabled = false
-            
-            updateChartData()
         }
     }
     
@@ -144,12 +144,14 @@ class HeartRateDetailActivity : AppCompatActivity() {
     }
     
     private fun updateChartData() {
+        if (!this::lineChart.isInitialized) return
+        
         val filteredData = getFilteredData()
         val entries = filteredData.mapIndexed { index, entry ->
             Entry(index.toFloat(), entry.value)
         }
 
-        val dataSet = LineDataSet(entries, "Kalp Ritmi").apply {
+        val dataSet = LineDataSet(entries, "Heart Rate").apply {
             color = ContextCompat.getColor(this@HeartRateDetailActivity, R.color.primary)
             setCircleColor(ContextCompat.getColor(this@HeartRateDetailActivity, R.color.primary))
             lineWidth = 2f
@@ -170,16 +172,15 @@ class HeartRateDetailActivity : AppCompatActivity() {
             val max = values.maxOrNull() ?: 0f
             val min = values.minOrNull() ?: 0f
             
-            averageTextView.text = "Ortalama: ${String.format("%.1f", avg)} BPM"
-            maxTextView.text = "En Yüksek: $max BPM"
-            minTextView.text = "En Düşük: $min BPM"
+            averageTextView.text = "Average: ${String.format("%.1f", avg)} BPM"
+            maxTextView.text = "Highest: $max BPM"
+            minTextView.text = "Lowest: $min BPM"
         } else {
-            averageTextView.text = "Ortalama: -- BPM"
-            maxTextView.text = "En Yüksek: -- BPM"
-            minTextView.text = "En Düşük: -- BPM"
+            averageTextView.text = "Average: -- BPM"
+            maxTextView.text = "Highest: -- BPM"
+            minTextView.text = "Lowest: -- BPM"
         }
 
-        // Zaman aralığı ortalamalarını güncelle
         updateTimeRangeAverages()
     }
 
@@ -220,7 +221,9 @@ class HeartRateDetailActivity : AppCompatActivity() {
             if (input.isNotEmpty()) {
                 val heartRate = input.toFloatOrNull()
                 if (heartRate != null) {
-                    heartRateData.add(HeartRateEntry(LocalDateTime.now(), heartRate))
+                    val timestamp = LocalDateTime.now()
+                    database.insertHeartRate(heartRate, timestamp)
+                    heartRateData.add(HeartRateEntry(timestamp, heartRate))
                     updateChartData()
                     updateStats()
                 }
@@ -231,6 +234,12 @@ class HeartRateDetailActivity : AppCompatActivity() {
         dialog.findViewById<MaterialButton>(R.id.cancelButton)?.setOnClickListener {
             dialog.dismiss()
         }
+    }
+
+    private fun loadDataFromDatabase() {
+        heartRateData = database.getAllHeartRates().toMutableList()
+        updateChartData()
+        updateStats()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

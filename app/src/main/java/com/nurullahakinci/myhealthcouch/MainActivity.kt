@@ -39,19 +39,20 @@ class MainActivity : AppCompatActivity() {
     
     private fun setupCards() {
         findViewById<MaterialCardView>(R.id.heartRateCard).setOnClickListener {
-            startActivity(Intent(this, HeartRateDetailActivity::class.java))
+            val intent = Intent(this, HeartRateDetailActivity::class.java)
+            startActivity(intent)
         }
         
         findViewById<MaterialCardView>(R.id.breathingCard).setOnClickListener {
-            // Handle breathing exercise card click
+            // Nefes egzersizi detay sayfasına yönlendirme
         }
         
-        findViewById<MaterialCardView>(R.id.stepCounterCard).setOnClickListener {
-            // Handle step counter card click
+        findViewById<MaterialCardView>(R.id.stepsCard).setOnClickListener {
+            // Adım sayacı detay sayfasına yönlendirme
         }
         
         findViewById<MaterialCardView>(R.id.waterCard).setOnClickListener {
-            // Handle water consumption card click
+            // Su tüketimi detay sayfasına yönlendirme
         }
     }
 }

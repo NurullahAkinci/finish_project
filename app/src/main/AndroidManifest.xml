@@ -26,7 +26,7 @@
         <activity
             android:name=".HeartRateDetailActivity"
             android:exported="false"
-            android:theme="@style/Theme.MyHealthCouch" />
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>
