@@ -10,6 +10,8 @@
 
     <!-- App specific colors -->
     <color name="primary">#FF6200EE</color>
+    <color name="primary_dark">#FF3700B3</color>
+    <color name="accent">#03DAC5</color>
     <color name="background">#F5F5F5</color>
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
@@ -19,4 +21,12 @@
     <color name="toolbar_end">#2575FC</color>
     <color name="notification_dot">#FF4B4B</color>
     <color name="toolbar_text_shadow">#50000000</color>
+
+    <!-- Progress Colors -->
+    <color name="progress_background">#E0E0E0</color>
+    <color name="progress_primary">@color/primary</color>
+
+    <!-- Chart Colors -->
+    <color name="chart_grid">#E0E0E0</color>
+    <color name="chart_text">#757575</color>
 </resources>

@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         }
         
         findViewById<MaterialCardView>(R.id.stepsCard).setOnClickListener {
-            // Adım sayacı detay sayfasına yönlendirme
+            startActivity(Intent(this, StepCounterDetailActivity::class.java))
         }
         
         findViewById<MaterialCardView>(R.id.waterCard).setOnClickListener {
