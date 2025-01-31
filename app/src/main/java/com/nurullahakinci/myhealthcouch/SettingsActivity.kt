@@ -26,7 +26,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun setupToolbar() {
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Ayarlar"
+        supportActionBar?.title = "Settings"
     }
     
     private fun setupPreferences() {

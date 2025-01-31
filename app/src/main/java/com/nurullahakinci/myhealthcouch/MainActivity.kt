@@ -10,6 +10,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.card.MaterialCardView
 import de.hdodenhof.circleimageview.CircleImageView
 import com.nurullahakinci.myhealthcouch.R
+import com.nurullahakinci.myhealthcouch.BreathingExerciseActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
@@ -41,8 +42,8 @@ class MainActivity : AppCompatActivity() {
     private fun updateProfileInfo() {
         // Kullanıcı adını güncelle
         val name = prefs.getString("user_name", "Kullanıcı")
-        userName.text = name ?: "Kullanıcı"
-        welcomeText.text = "Hoş geldiniz"
+        userName.text = name ?: "User"
+        welcomeText.text = "Welcome Back!"
         
         // Profil resmini güncelle
         val savedImageUri = prefs.getString("profile_image", null)
@@ -91,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         }
         
         findViewById<MaterialCardView>(R.id.breathingCard).setOnClickListener {
-            // Nefes egzersizi detay sayfasına yönlendirme
+            startActivity(Intent(this, BreathingExerciseActivity::class.java))
         }
         
         findViewById<MaterialCardView>(R.id.stepsCard).setOnClickListener {

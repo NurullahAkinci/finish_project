@@ -15,6 +15,7 @@
     <color name="background">#F5F5F5</color>
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
+    <color name="primary_light">#BBDEFB</color>
 
     <!-- Toolbar colors -->
     <color name="toolbar_start">#6A11CB</color>
@@ -29,4 +30,7 @@
     <!-- Chart Colors -->
     <color name="chart_grid">#E0E0E0</color>
     <color name="chart_text">#757575</color>
+
+    <color name="blue_500">#2196F3</color>
+    <color name="green_500">#4CAF50</color>
 </resources>
