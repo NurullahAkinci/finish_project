@@ -18,14 +18,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="Heart Rate (BPM)"
-        app:endIconMode="clear_text">
+        android:hint="Heart Rate (40-250 BPM)"
+        app:helperText="Enter a value between 40 and 250"
+        app:endIconMode="clear_text"
+        app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/heartRateInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number" />
+            android:inputType="numberDecimal"
+            android:maxLength="3"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -39,15 +42,17 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/cancelButton"
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_marginEnd="8dp"
             android:text="Cancel" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/addButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Add" />
 
     </LinearLayout>

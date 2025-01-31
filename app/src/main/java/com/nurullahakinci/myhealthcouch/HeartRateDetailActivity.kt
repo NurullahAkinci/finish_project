@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -24,9 +25,21 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import com.nurullahakinci.myhealthcouch.data.HeartRateDatabase
 import com.nurullahakinci.myhealthcouch.data.HeartRateEntry
+import android.widget.ImageButton
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import android.content.SharedPreferences
+import com.nurullahakinci.myhealthcouch.formatter.DateAxisValueFormatter
+import java.time.ZoneOffset
+import java.time.Instant
+import com.nurullahakinci.myhealthcouch.adapters.HealthTipsAdapter
+import com.nurullahakinci.myhealthcouch.models.HealthTip
 
 class HeartRateDetailActivity : AppCompatActivity() {
-    private lateinit var lineChart: LineChart
+    private lateinit var heartRateChart: LineChart
+    private lateinit var tipsRecyclerView: RecyclerView
+    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var database: HeartRateDatabase
     private var heartRateData = mutableListOf<HeartRateEntry>()
     private lateinit var averageTextView: TextView
@@ -47,8 +60,10 @@ class HeartRateDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_heart_rate_detail)
         
         setupToolbar()
-        setupViews()
+        initializeViews()
         setupChart()
+        setupTipsRecyclerView()
+        updateStats()
         
         database = HeartRateDatabase(this)
         loadDataFromDatabase()
@@ -57,104 +72,59 @@ class HeartRateDetailActivity : AppCompatActivity() {
         setupTimeRangeCards()
     }
     
-    private fun setupViews() {
+    private fun initializeViews() {
+        heartRateChart = findViewById(R.id.heartRateChart)
+        tipsRecyclerView = findViewById(R.id.tipsRecyclerView)
+        sharedPreferences = getSharedPreferences("heart_rate_prefs", MODE_PRIVATE)
         averageTextView = findViewById(R.id.averageHeartRate)
         maxTextView = findViewById(R.id.maxHeartRate)
         minTextView = findViewById(R.id.minHeartRate)
         dailyAverageTextView = findViewById(R.id.dailyAverage)
         weeklyAverageTextView = findViewById(R.id.weeklyAverage)
         monthlyAverageTextView = findViewById(R.id.monthlyAverage)
-        updateStats()
+
+        // Reset button setup
+        findViewById<MaterialButton>(R.id.resetDataButton).setOnClickListener {
+            showResetConfirmationDialog()
+        }
     }
     
     private fun setupToolbar() {
         setSupportActionBar(findViewById(R.id.toolbar))
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Heart Rate Details"
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+            title = "Heart Rate"
+        }
+
+        findViewById<ImageButton>(R.id.reminderButton).setOnClickListener {
+            showReminderDialog()
+        }
     }
     
     private fun setupChart() {
-        lineChart = findViewById(R.id.heartRateChart)
-        lineChart.apply {
+        heartRateChart.apply {
             description.isEnabled = false
             setTouchEnabled(true)
             isDragEnabled = true
             setScaleEnabled(true)
             setPinchZoom(true)
-            setDrawGridBackground(false)
-            
-            // Enable double tap to zoom
-            isDoubleTapToZoomEnabled = true
-            
-            // Set minimum scale factor
-            setScaleMinima(1f, 1f)
-            
-            // Set gesture listener
-            onChartGestureListener = object : OnChartGestureListener {
-                override fun onChartGestureStart(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {
-                    // Gesture başladığında yapılacak işlemler
-                }
-                override fun onChartGestureEnd(me: MotionEvent?, lastPerformedGesture: ChartTouchListener.ChartGesture?) {
-                    // Gesture bittiğinde yapılacak işlemler
-                }
-                override fun onChartLongPressed(me: MotionEvent?) {
-                    // Uzun basıldığında yapılacak işlemler
-                }
-                override fun onChartDoubleTapped(me: MotionEvent?) {
-                    // Çift tıklandığında yapılacak işlemler
-                    animateX(500)
-                }
-                override fun onChartSingleTapped(me: MotionEvent?) {
-                    // Tek tıklandığında yapılacak işlemler
-                    animateY(500)
-                }
-                override fun onChartFling(me1: MotionEvent?, me2: MotionEvent?, velocityX: Float, velocityY: Float) {
-                    // Fling hareketi yapıldığında yapılacak işlemler
-                }
-                override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {
-                    // Ölçeklendirme yapıldığında yapılacak işlemler
-                }
-                override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {
-                    // Grafik kaydırıldığında yapılacak işlemler
-                }
-            }
             
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
-                setDrawGridLines(false)
-                labelRotationAngle = -45f
-                granularity = 1f
-                valueFormatter = object : ValueFormatter() {
-                    override fun getFormattedValue(value: Float): String {
-                        return if (value.toInt() in timestamps.indices) {
-                            val formatter = when (selectedTimeRange) {
-                                TimeRange.DAILY -> DateTimeFormatter.ofPattern("HH:mm")
-                                TimeRange.WEEKLY -> DateTimeFormatter.ofPattern("MM/dd HH:mm")
-                                TimeRange.MONTHLY -> DateTimeFormatter.ofPattern("MM/dd")
-                            }
-                            timestamps[value.toInt()].format(formatter)
-                        } else ""
-                    }
-                }
+                valueFormatter = DateAxisValueFormatter()
             }
-            
-            axisLeft.apply {
-                setDrawGridLines(true)
-                axisMinimum = 40f
-                axisMaximum = 120f
-            }
+
             axisRight.isEnabled = false
-
+            
             legend.apply {
+                form = Legend.LegendForm.LINE
                 textSize = 12f
-                formSize = 12f
-                isEnabled = true
+                verticalAlignment = Legend.LegendVerticalAlignment.TOP
+                horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
             }
-        }
 
-        // Chart card'ına tıklama işlevi ekle
-        findViewById<MaterialCardView>(R.id.chartCard).setOnClickListener {
-            lineChart.animateX(1000)
+            updateChartData()
         }
     }
     
@@ -211,32 +181,20 @@ class HeartRateDetailActivity : AppCompatActivity() {
     }
     
     private fun updateChartData() {
-        if (!this::lineChart.isInitialized) return
-        
-        val filteredData = getFilteredData()
-        timestamps.clear()
-        val entries = filteredData.mapIndexed { index, entry ->
-            timestamps.add(entry.timestamp)
-            Entry(index.toFloat(), entry.value)
+        val entries = getFilteredData().map { heartRateEntry ->
+            Entry(heartRateEntry.timestamp.toEpochSecond(ZoneOffset.UTC).toFloat(), heartRateEntry.value)
         }
 
         val dataSet = LineDataSet(entries, "Heart Rate").apply {
-            color = ContextCompat.getColor(this@HeartRateDetailActivity, R.color.primary)
-            setCircleColor(ContextCompat.getColor(this@HeartRateDetailActivity, R.color.primary))
+            color = ContextCompat.getColor(this@HeartRateDetailActivity, R.color.purple_500)
+            setCircleColor(ContextCompat.getColor(this@HeartRateDetailActivity, R.color.purple_500))
             lineWidth = 2f
             circleRadius = 4f
-            setDrawValues(true)
-            valueTextSize = 10f
-            mode = LineDataSet.Mode.CUBIC_BEZIER
-            
-            // Highlight settings
-            highLightColor = ContextCompat.getColor(this@HeartRateDetailActivity, R.color.primary)
-            setDrawHighlightIndicators(true)
-            highlightLineWidth = 1.5f
+            setDrawValues(false)
         }
-        
-        lineChart.data = LineData(dataSet)
-        lineChart.invalidate()
+
+        heartRateChart.data = LineData(dataSet)
+        heartRateChart.invalidate()
     }
     
     private fun updateStats() {
@@ -296,13 +254,24 @@ class HeartRateDetailActivity : AppCompatActivity() {
             if (input.isNotEmpty()) {
                 val heartRate = input.toFloatOrNull()
                 if (heartRate != null) {
-                    val timestamp = LocalDateTime.now()
-                    database.insertHeartRate(heartRate, timestamp)
-                    heartRateData.add(HeartRateEntry(timestamp, heartRate))
-                    updateChartData()
-                    updateStats()
+                    when {
+                        heartRate < 40 || heartRate > 250 -> {
+                            MaterialAlertDialogBuilder(this)
+                                .setTitle("Invalid Heart Rate")
+                                .setMessage("Please enter a heart rate between 40 and 250 BPM")
+                                .setPositiveButton("OK", null)
+                                .show()
+                        }
+                        else -> {
+                            val timestamp = LocalDateTime.now()
+                            database.insertHeartRate(heartRate, timestamp)
+                            heartRateData.add(HeartRateEntry(timestamp, heartRate))
+                            updateChartData()
+                            updateStats()
+                            dialog.dismiss()
+                        }
+                    }
                 }
-                dialog.dismiss()
             }
         }
         
@@ -315,6 +284,79 @@ class HeartRateDetailActivity : AppCompatActivity() {
         heartRateData = database.getAllHeartRates().toMutableList()
         updateChartData()
         updateStats()
+    }
+
+    private fun setupTipsRecyclerView() {
+        tipsRecyclerView.apply {
+            layoutManager = LinearLayoutManager(this@HeartRateDetailActivity)
+            adapter = HealthTipsAdapter(getHealthTips())
+        }
+    }
+
+    private fun getHealthTips(): List<HealthTip> = listOf(
+        HealthTip(
+            "Regular Exercise",
+            "Aim for at least 150 minutes of moderate exercise per week to maintain a healthy heart rate.",
+            R.drawable.ic_exercise
+        ),
+        HealthTip(
+            "Stress Management",
+            "Practice relaxation techniques to help regulate your heart rate and reduce stress.",
+            R.drawable.ic_stress
+        ),
+        HealthTip(
+            "Sleep Quality",
+            "Get 7-9 hours of quality sleep to help maintain a healthy resting heart rate.",
+            R.drawable.ic_sleep
+        ),
+        HealthTip(
+            "Hydration",
+            "Stay well-hydrated to help your heart pump blood more efficiently.",
+            R.drawable.ic_water
+        )
+    )
+
+    private fun showReminderDialog() {
+        val view = layoutInflater.inflate(R.layout.dialog_heart_rate_reminder, null)
+        
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Measurement Reminders")
+            .setView(view)
+            .setPositiveButton("Save") { _, _ ->
+                saveReminderSettings(view)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun saveReminderSettings(view: View) {
+        // Implementation for saving reminder settings
+    }
+
+    private fun showResetConfirmationDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Reset Data")
+            .setMessage("Are you sure you want to delete all heart rate data? This action cannot be undone.")
+            .setPositiveButton("Reset") { _, _ ->
+                resetAllData()
+            }
+            .setNegativeButton("Cancel", null)
+            .setIcon(R.drawable.ic_delete)
+            .show()
+    }
+
+    private fun resetAllData() {
+        database.clearAllData()
+        heartRateData.clear()
+        updateChartData()
+        updateStats()
+        
+        // Show success message
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Success")
+            .setMessage("All heart rate data has been deleted.")
+            .setPositiveButton("OK", null)
+            .show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

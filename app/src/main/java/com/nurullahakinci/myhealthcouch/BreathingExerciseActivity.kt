@@ -51,9 +51,9 @@ class BreathingExerciseActivity : AppCompatActivity() {
         initializeViews()
         setupExerciseCards()
         setupCustomizationOptions()
-        updateStats() // İlk açılışta istatistikleri göster
+        updateStats()
         
-        // Kayıtlı rengi uygula
+
         val savedColor = sharedPreferences.getInt("circle_color", ContextCompat.getColor(this, R.color.purple_500))
         breathingCircle.setColorFilter(savedColor)
     }
@@ -63,7 +63,7 @@ class BreathingExerciseActivity : AppCompatActivity() {
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
-            title = "Nefes Egzersizleri"
+            title = "Breathing Exercises"
         }
     }
     
@@ -437,7 +437,7 @@ class BreathingExerciseActivity : AppCompatActivity() {
     }
 
     private fun calculateGoalProgress(): Float {
-        val targetDailyMinutes = 10 // Günlük hedef dakika
+        val targetDailyMinutes = 10 //
         val monthlyStats = getMonthlyStats()
         val averageMinutesPerDay = monthlyStats.second / (1000 * 60) / 30f
         return (averageMinutesPerDay / targetDailyMinutes) * 100
@@ -445,7 +445,7 @@ class BreathingExerciseActivity : AppCompatActivity() {
 
     private fun getMostUsedExercise(): String {
         var maxCount = 0
-        var mostUsedExercise = "Henüz veri yok"
+        var mostUsedExercise = "No data yet"
 
         listOf(
             "4-7-8 Relaxing Breath",
@@ -471,7 +471,6 @@ class BreathingExerciseActivity : AppCompatActivity() {
         val description: String
     )
 
-    // İstatistikleri güncellemek için yeni bir fonksiyon
     private fun updateStats() {
         val weeklyStats = getWeeklyStats()
         val monthlyStats = getMonthlyStats()
@@ -480,14 +479,14 @@ class BreathingExerciseActivity : AppCompatActivity() {
         val exerciseTypeStats = getExerciseTypeStats()
         val goalProgress = calculateGoalProgress()
         
-        // Haftalık İstatistikler
+        // Weekly Statistics
         findViewById<TextView>(R.id.weeklyStatsText).text = """
             • Total: ${weeklyStats.first} cycles
             • Time: ${weeklyStats.second / 60} min
             • Avg.: ${String.format("%.1f", weeklyStats.third / 60)} min/day
         """.trimIndent()
         
-        // Aylık İstatistikler
+        // Monthly Statistics
         findViewById<TextView>(R.id.monthlyStatsText).text = """
             • Total: ${monthlyStats.first} cycles
             • Time: ${monthlyStats.second / 60} min
@@ -495,14 +494,14 @@ class BreathingExerciseActivity : AppCompatActivity() {
             • Goal: ${String.format("%.1f", goalProgress)}%
         """.trimIndent()
         
-        // Genel İstatistikler
+        // General Statistics
         findViewById<TextView>(R.id.generalStatsText).text = """
             • Favorite: $mostUsedExercise
             • Longest: $longestSession min
             • Total: ${sharedPreferences.getInt("total_breaths", 0)} cycles
         """.trimIndent()
         
-        // Egzersiz Türü Dağılımı
+        // Distribution of Exercise Type
         findViewById<TextView>(R.id.exerciseTypeStatsText).text = """
             • 4-7-8: ${exerciseTypeStats["4-7-8 Relaxing Breath"]} times
             • Stress: ${exerciseTypeStats["Stress Relief Breath"]} times
