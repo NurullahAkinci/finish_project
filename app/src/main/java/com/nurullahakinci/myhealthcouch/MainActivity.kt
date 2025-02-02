@@ -11,6 +11,11 @@ import com.google.android.material.card.MaterialCardView
 import de.hdodenhof.circleimageview.CircleImageView
 import com.nurullahakinci.myhealthcouch.R
 import com.nurullahakinci.myhealthcouch.BreathingExerciseActivity
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import android.view.View
 
 class MainActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
@@ -40,12 +45,10 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun updateProfileInfo() {
-        // Kullanıcı adını güncelle
-        val name = prefs.getString("user_name", "Kullanıcı")
+        val name = prefs.getString("user_name", "Nurullah Akıncı")
         userName.text = name ?: "User"
         welcomeText.text = "Welcome Back!"
         
-        // Profil resmini güncelle
         val savedImageUri = prefs.getString("profile_image", null)
         if (savedImageUri != null) {
             try {
@@ -56,13 +59,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             profileImage.setImageResource(R.drawable.default_profile)
         }
-    }
-    
-    override fun onResume() {
-        super.onResume()
-        // Aktivite tekrar görünür olduğunda profil bilgilerini güncelle
-        setupPreferences() // SharedPreferences'ı yeniden başlat
-        updateProfileInfo() // Profil bilgilerini güncelle
     }
     
     private fun setupBottomNavigation() {
@@ -96,12 +92,7 @@ class MainActivity : AppCompatActivity() {
         }
         
         findViewById<MaterialCardView>(R.id.stepsCard).setOnClickListener {
-            try {
-                val intent = Intent(this, StepCounterDetailActivity::class.java)
-                startActivity(intent)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            startActivity(Intent(this, StepCounterDetailActivity::class.java))
         }
         
         findViewById<MaterialCardView>(R.id.waterCard).setOnClickListener {

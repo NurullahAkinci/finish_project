@@ -103,6 +103,7 @@ class HeartRateDetailActivity : AppCompatActivity() {
     }
     
     private fun setupChart() {
+        heartRateChart = findViewById(R.id.heartRateChart)
         heartRateChart.apply {
             description.isEnabled = false
             setTouchEnabled(true)
@@ -123,8 +124,6 @@ class HeartRateDetailActivity : AppCompatActivity() {
                 verticalAlignment = Legend.LegendVerticalAlignment.TOP
                 horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
             }
-
-            updateChartData()
         }
     }
     
@@ -198,42 +197,37 @@ class HeartRateDetailActivity : AppCompatActivity() {
     }
     
     private fun updateStats() {
-        val filteredData = getFilteredData()
-        if (filteredData.isNotEmpty()) {
-            val values = filteredData.map { it.value }
-            val avg = values.average()
-            val max = values.maxOrNull() ?: 0f
-            val min = values.minOrNull() ?: 0f
-            
-            averageTextView.text = "Average: ${String.format("%.1f", avg)} BPM"
-            maxTextView.text = "Highest: $max BPM"
-            minTextView.text = "Lowest: $min BPM"
-        } else {
-            averageTextView.text = "Average: -- BPM"
-            maxTextView.text = "Highest: -- BPM"
-            minTextView.text = "Lowest: -- BPM"
+        if (heartRateData.isEmpty()) {
+            averageTextView.text = "--"
+            maxTextView.text = "--"
+            minTextView.text = "--"
+            return
         }
 
-        updateTimeRangeAverages()
-    }
+        val average = heartRateData.map { it.value }.average().toInt()
+        val max = heartRateData.maxOf { it.value }
+        val min = heartRateData.minOf { it.value }
 
-    private fun updateTimeRangeAverages() {
+        averageTextView.text = average.toString()
+        maxTextView.text = max.toString()
+        minTextView.text = min.toString()
+
+        // Zaman aralığına göre istatistikler
         val now = LocalDateTime.now()
-        
-        // Günlük ortalama
-        val dailyData = heartRateData.filter { ChronoUnit.DAYS.between(it.timestamp, now) == 0L }
-        val dailyAvg = dailyData.map { it.value }.average()
-        dailyAverageTextView.text = if (dailyData.isNotEmpty()) String.format("%.1f BPM", dailyAvg) else "-- BPM"
+        val dayAgo = now.minus(1, ChronoUnit.DAYS)
+        val weekAgo = now.minus(7, ChronoUnit.DAYS)
+        val monthAgo = now.minus(30, ChronoUnit.DAYS)
 
-        // Haftalık ortalama
-        val weeklyData = heartRateData.filter { ChronoUnit.DAYS.between(it.timestamp, now) <= 7 }
-        val weeklyAvg = weeklyData.map { it.value }.average()
-        weeklyAverageTextView.text = if (weeklyData.isNotEmpty()) String.format("%.1f BPM", weeklyAvg) else "-- BPM"
+        val dailyData = heartRateData.filter { it.timestamp.isAfter(dayAgo) }
+        val weeklyData = heartRateData.filter { it.timestamp.isAfter(weekAgo) }
+        val monthlyData = heartRateData.filter { it.timestamp.isAfter(monthAgo) }
 
-        // Aylık ortalama
-        val monthlyData = heartRateData.filter { ChronoUnit.DAYS.between(it.timestamp, now) <= 30 }
-        val monthlyAvg = monthlyData.map { it.value }.average()
-        monthlyAverageTextView.text = if (monthlyData.isNotEmpty()) String.format("%.1f BPM", monthlyAvg) else "-- BPM"
+        dailyAverageTextView.text = if (dailyData.isNotEmpty()) 
+            dailyData.map { it.value }.average().toInt().toString() else "--"
+        weeklyAverageTextView.text = if (weeklyData.isNotEmpty()) 
+            weeklyData.map { it.value }.average().toInt().toString() else "--"
+        monthlyAverageTextView.text = if (monthlyData.isNotEmpty()) 
+            monthlyData.map { it.value }.average().toInt().toString() else "--"
     }
     
     private fun setupAddButton() {
