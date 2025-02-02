@@ -7,11 +7,11 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.nurullahakinci.myhealthcouch.ui.home.HomeFragment"
-        android:label="Home" />
+        android:label="@string/title_home" />
 
     <fragment
         android:id="@+id/navigation_settings"
         android:name="com.nurullahakinci.myhealthcouch.ui.settings.SettingsFragment"
-        android:label="Settings" />
+        android:label="@string/title_settings" />
 
 </navigation> 

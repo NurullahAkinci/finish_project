@@ -1,4 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">My Health Couch</string>
-    <string name="enter_data">Enter Data</string>
+    <string name="app_name">My Health Coach</string>
+    
+    <!-- Navigation Titles -->
+    <string name="title_home">Ana Sayfa</string>
+    <string name="title_analytics">Analiz</string>
+    <string name="title_settings">Ayarlar</string>
+    
+    <!-- Other strings -->
+    <string name="mark_all_read">Tümünü Okundu İşaretle</string>
+    <string name="notifications">Bildirimler</string>
 </resources>
