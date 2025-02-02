@@ -4,10 +4,7 @@
         android:id="@+id/navigation_home"
         android:icon="@drawable/ic_home"
         android:title="@string/title_home" />
-    <item
-        android:id="@+id/navigation_analytics"
-        android:icon="@drawable/ic_analytics"
-        android:title="Analytics" />
+
     <item
         android:id="@+id/navigation_settings"
         android:icon="@drawable/ic_settings"

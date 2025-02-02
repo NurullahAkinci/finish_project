@@ -15,7 +15,7 @@ class BreathingReminderReceiver : BroadcastReceiver() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 "breathing_reminder",
-                "Nefes Egzersizi Hatırlatıcısı",
+                "Breathing Exercise Reminder",
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationManager.createNotificationChannel(channel)
@@ -23,8 +23,8 @@ class BreathingReminderReceiver : BroadcastReceiver() {
 
         val notification = NotificationCompat.Builder(context, "breathing_reminder")
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("Nefes Egzersizi Zamanı")
-            .setContentText("Günlük nefes egzersizinizi yapmayı unutmayın!")
+            .setContentTitle("Time for Breathing Exercises")
+            .setContentText("Don't forget to do your daily breathing exercise!")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
             .build()

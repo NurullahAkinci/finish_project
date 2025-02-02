@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@drawable/gradient_toolbar"
-            app:title="Ayarlar"
+            app:title="Settings"
             app:titleTextColor="@color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -63,7 +63,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Profil Ayarları"
+                            android:text="Profile Settings"
                             android:textColor="@color/primary"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -71,7 +71,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Profil bilgilerinizi düzenleyin"
+                            android:text="Edit your profile information"
                             android:textColor="@color/text_secondary"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -96,7 +96,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:text="Hedef Ayarları"
+                        android:text="Target Settings"
                         android:textColor="@color/primary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -105,7 +105,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:hint="Günlük Adım Hedefi"
+                        android:hint="Daily Step Target"
                         app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -119,7 +119,7 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Günlük Su Hedefi (ml)"
+                        android:hint="Daily Water Target (ml)"
                         app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -150,7 +150,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:text="Bildirim Ayarları"
+                        android:text="Notification Settings"
                         android:textColor="@color/primary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -160,14 +160,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="Günlük Hatırlatmalar"
+                        android:text="Daily Reminders"
                         android:textColor="@color/text_primary" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/goalAlertsSwitch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Hedef Uyarıları"
+                        android:text="Target Alerts"
                         android:textColor="@color/text_primary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -189,7 +189,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:text="Uygulama Ayarları"
+                        android:text="Application Settings"
                         android:textColor="@color/primary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -199,14 +199,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="Karanlık Mod"
+                        android:text="Dark Mode"
                         android:textColor="@color/text_primary" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/metricSwitch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Metrik Sistem Kullan"
+                        android:text="Use Metric System"
                         android:textColor="@color/text_primary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

@@ -3,11 +3,11 @@
     <string name="app_name">My Health Coach</string>
     
     <!-- Navigation Titles -->
-    <string name="title_home">Ana Sayfa</string>
+    <string name="title_home">Home</string>
     <string name="title_analytics">Analiz</string>
-    <string name="title_settings">Ayarlar</string>
+    <string name="title_settings">Settings</string>
     
     <!-- Other strings -->
-    <string name="mark_all_read">Tümünü Okundu İşaretle</string>
-    <string name="notifications">Bildirimler</string>
+    <string name="mark_all_read">Mark as Read</string>
+    <string name="notifications">Notifications</string>
 </resources>

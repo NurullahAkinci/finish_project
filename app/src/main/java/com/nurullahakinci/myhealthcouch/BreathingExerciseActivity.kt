@@ -143,7 +143,7 @@ class BreathingExerciseActivity : AppCompatActivity() {
         exerciseCards[index].alpha = 1.0f
         startButton.isEnabled = true
         
-        // Egzersiz bilgilerini göster
+
         currentExercise?.let {
             exerciseInfoText.text = it.description
             exerciseInfoText.visibility = View.VISIBLE
@@ -152,31 +152,31 @@ class BreathingExerciseActivity : AppCompatActivity() {
     
     private fun startExercise() {
         isExerciseRunning = true
-        startButton.text = "Durdur"
+        startButton.text = "Stop"
         breathCount = 0
         currentExercise?.let { exercise ->
             startBreathingAnimation(exercise)
         }
         updateStatistics()
-        updateStats() // İstatistikleri güncelle
+        updateStats() // Update statistics
     }
     
     private fun stopExercise() {
         isExerciseRunning = false
-        startButton.text = "Başla"
+        startButton.text = "Start"
         currentAnimator?.cancel()
         currentAnimator = null
-        instructionText.text = "Hazır"
+        instructionText.text = "Ready"
         breathCount = 0
         updateBreathCount()
         breathingCircle.scaleX = 1f
         breathingCircle.scaleY = 1f
-        updateStats() // İstatistikleri güncelle
+        updateStats() // Update statistics
     }
     
     private fun updateBreathCount() {
         timerText.text = if (breathCount > 0) {
-            "Tamamlanan nefes döngüsü: $breathCount"
+            "The completed breath cycle: $breathCount"
         } else {
             ""
         }
@@ -216,9 +216,9 @@ class BreathingExerciseActivity : AppCompatActivity() {
         val currentTime = fraction * totalTime
         
         instructionText.text = when {
-            currentTime < exercise.inhaleTime -> "Nefes Al"
-            currentTime < exercise.inhaleTime + exercise.holdTime -> "Tut"
-            else -> "Nefes Ver"
+            currentTime < exercise.inhaleTime -> "Breathe in"
+            currentTime < exercise.inhaleTime + exercise.holdTime -> "Hold it"
+            else -> "Exhale"
         }
     }
     

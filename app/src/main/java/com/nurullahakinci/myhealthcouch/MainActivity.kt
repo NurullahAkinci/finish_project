@@ -48,13 +48,13 @@ class MainActivity : AppCompatActivity() {
         welcomeText = findViewById(R.id.welcomeText)
         
         // Kullanıcı adını ayarla
-        userName.text = sharedPreferences.getString("user_name", "Kullanıcı")
+        userName.text = sharedPreferences.getString("user_name", "Nurullah Akıncı")
         
-        // Karşılama mesajını ayarla
+
         val greeting = when {
-            android.text.format.DateFormat.format("HH", System.currentTimeMillis()).toString().toInt() < 12 -> "Günaydın"
-            android.text.format.DateFormat.format("HH", System.currentTimeMillis()).toString().toInt() < 18 -> "İyi günler"
-            else -> "İyi akşamlar"
+            android.text.format.DateFormat.format("HH", System.currentTimeMillis()).toString().toInt() < 12 -> "Good Morning!"
+            android.text.format.DateFormat.format("HH", System.currentTimeMillis()).toString().toInt() < 18 -> "Good Day!"
+            else -> "Good Night!"
         }
         welcomeText.text = greeting
     }
@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
             
             val recyclerView = dialog.findViewById<RecyclerView>(R.id.notificationsRecyclerView)
             
-            // Adapter'ı daha geniş scope'ta tanımlayalım
+
             lateinit var notificationAdapter: NotificationAdapter
             
             notificationAdapter = NotificationAdapter(
@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            // Hata durumunda kullanıcıya bilgi
+
             MaterialAlertDialogBuilder(this)
                 .setTitle("Hata")
                 .setMessage("Bildirimler yüklenirken bir hata oluştu: ${e.message}")
